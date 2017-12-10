@@ -5,11 +5,12 @@
 # LICENSE file in the root directory of this source tree. An additional grant
 # of patent rights can be found in the PATENTS file in the same directory.
 
-include_defs("//YOGA_DEFS")
+include_defs("//yoga_defs.bzl")
 
 cxx_library(
     name = "jni",
     srcs = glob(["jni/*.cpp"]),
+    header_namespace = "",
     compiler_flags = [
         "-fno-omit-frame-pointer",
         "-fexceptions",
@@ -19,7 +20,6 @@ cxx_library(
         "-O3",
         "-std=c++11",
     ],
-    header_namespace = "",
     soname = "libyoga.$(ext)",
     visibility = ["PUBLIC"],
     deps = [
@@ -32,6 +32,7 @@ cxx_library(
 java_library(
     name = "java",
     srcs = glob(["com/facebook/yoga/*.java"]),
+    required_for_source_only_abi = True,
     source = "1.7",
     target = "1.7",
     tests = [
@@ -56,5 +57,13 @@ java_test(
     deps = [
         ":java",
         JUNIT_TARGET,
+    ],
+)
+
+java_binary(
+    name = "yoga",
+    deps = [
+        ":java",
+        FBJNI_JAVA_TARGET,
     ],
 )
